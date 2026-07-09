@@ -1,0 +1,24 @@
+{
+  "name": "warden-control-plane",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Warden: a serverless control plane for governing LLM/RAG deployments with statistical gates.",
+  "scripts": {
+    "dev": "node server/next-server.mjs",
+    "build": "next build",
+    "start": "NODE_ENV=production node server/next-server.mjs",
+    "local": "node server/index.mjs",
+    "test": "node tests/stat-tests.mjs",
+    "seed": "node server/seed.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "lucide-react": "^1.23.0",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  }
+}

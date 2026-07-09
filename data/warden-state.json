@@ -1,0 +1,370 @@
+{
+  "generatedAt": "2026-07-09T13:16:12.914Z",
+  "summary": {
+    "environment": "prod-canary",
+    "gateState": "blocked",
+    "pipelineStatus": "awaiting-human-review",
+    "activeRollout": "rag-answerer-v18",
+    "rolloutPercent": 12,
+    "deploymentsEvaluated": 41,
+    "blockedDeployments": 3,
+    "meanDecisionSeconds": 46,
+    "monthlySpendUsd": 1842.36,
+    "monthlyCapUsd": 2200,
+    "costPerThousandTokens": 0.0187,
+    "costCapBreached": false,
+    "staleRegistryEntries": 1,
+    "activeAlerts": 2
+  },
+  "runs": [
+    {
+      "id": "run-20260709-rag-answerer-v18",
+      "createdAt": "2026-07-09T03:42:18+08:00",
+      "status": "blocked",
+      "candidate": "rag-answerer-v18",
+      "baseline": "rag-answerer-v17",
+      "trigger": "SQS:model-version-created",
+      "owner": "platform-ai",
+      "rolloutPercent": 12,
+      "corpusSnapshot": "support-kb-2026-07-08T21-11Z",
+      "promptVersion": "triage-answerer-prompt-v31",
+      "modelVersion": "claude-sonnet-gated-v18",
+      "decision": {
+        "verdict": "block",
+        "reason": "Latency and retrieval quality drift crossed the deployment gate.",
+        "confidence": 0.9999,
+        "pValue": 0.000031,
+        "sampleSize": 1400
+      },
+      "metrics": [
+        {
+          "name": "P99 latency",
+          "baseline": 1840,
+          "candidate": 2142,
+          "unit": "ms",
+          "delta": 16.4,
+          "direction": "worse",
+          "gate": "block when > 8%"
+        },
+        {
+          "name": "Retrieval hit@5",
+          "baseline": 0.842,
+          "candidate": 0.771,
+          "unit": "ratio",
+          "delta": -8.4,
+          "direction": "worse",
+          "gate": "block when < -3%"
+        },
+        {
+          "name": "Hallucination judge fail",
+          "baseline": 0.036,
+          "candidate": 0.061,
+          "unit": "ratio",
+          "delta": 69.4,
+          "direction": "worse",
+          "gate": "block when > 25%"
+        },
+        {
+          "name": "Cost / 1k tokens",
+          "baseline": 0.0179,
+          "candidate": 0.0187,
+          "unit": "usd",
+          "delta": 4.5,
+          "direction": "watch",
+          "gate": "warn when > 10%"
+        }
+      ],
+      "statTests": {
+        "mannWhitneyU": {
+          "u": 318672,
+          "z": -4.17,
+          "pValue": 0.000031,
+          "interpretation": "Candidate latency distribution is significantly worse than baseline."
+        },
+        "sprt": {
+          "logLikelihoodRatio": 5.89,
+          "alpha": 0.01,
+          "beta": 0.05,
+          "decision": "accept-regression-hypothesis",
+          "observations": 1400
+        }
+      },
+      "artifacts": [
+        "s3://warden-prod-results/runs/run-20260709-rag-answerer-v18/report.json",
+        "s3://warden-prod-results/runs/run-20260709-rag-answerer-v18/latency-samples.parquet"
+      ]
+    },
+    {
+      "id": "run-20260708-rag-answerer-v17",
+      "createdAt": "2026-07-08T21:04:02+08:00",
+      "status": "passed",
+      "candidate": "rag-answerer-v17",
+      "baseline": "rag-answerer-v16",
+      "trigger": "EventBridge:prompt-version-promoted",
+      "owner": "platform-ai",
+      "rolloutPercent": 100,
+      "corpusSnapshot": "support-kb-2026-07-08T04-30Z",
+      "promptVersion": "triage-answerer-prompt-v30",
+      "modelVersion": "claude-sonnet-gated-v17",
+      "decision": {
+        "verdict": "allow",
+        "reason": "No statistically significant quality or latency regression detected.",
+        "confidence": 0.944,
+        "pValue": 0.081,
+        "sampleSize": 1200
+      },
+      "metrics": [
+        {
+          "name": "P99 latency",
+          "baseline": 1881,
+          "candidate": 1840,
+          "unit": "ms",
+          "delta": -2.2,
+          "direction": "better",
+          "gate": "block when > 8%"
+        },
+        {
+          "name": "Retrieval hit@5",
+          "baseline": 0.835,
+          "candidate": 0.842,
+          "unit": "ratio",
+          "delta": 0.8,
+          "direction": "better",
+          "gate": "block when < -3%"
+        },
+        {
+          "name": "Hallucination judge fail",
+          "baseline": 0.038,
+          "candidate": 0.036,
+          "unit": "ratio",
+          "delta": -5.3,
+          "direction": "better",
+          "gate": "block when > 25%"
+        }
+      ],
+      "statTests": {
+        "mannWhitneyU": {
+          "u": 705192,
+          "z": 1.74,
+          "pValue": 0.081,
+          "interpretation": "No significant regression."
+        },
+        "sprt": {
+          "logLikelihoodRatio": -1.46,
+          "alpha": 0.01,
+          "beta": 0.05,
+          "decision": "continue-or-allow",
+          "observations": 1200
+        }
+      },
+      "artifacts": [
+        "s3://warden-prod-results/runs/run-20260708-rag-answerer-v17/report.json"
+      ]
+    }
+  ],
+  "registry": {
+    "models": [
+      {
+        "id": "claude-sonnet-gated-v18",
+        "type": "generation-model",
+        "status": "canary-blocked",
+        "createdAt": "2026-07-09T03:38:11+08:00",
+        "owner": "platform-ai",
+        "s3Key": "registry/models/claude-sonnet-gated-v18.json",
+        "metadata": {
+          "provider": "anthropic",
+          "temperature": 0.2,
+          "maxTokens": 900
+        }
+      },
+      {
+        "id": "claude-sonnet-gated-v17",
+        "type": "generation-model",
+        "status": "production",
+        "createdAt": "2026-07-08T20:31:00+08:00",
+        "owner": "platform-ai",
+        "s3Key": "registry/models/claude-sonnet-gated-v17.json",
+        "metadata": {
+          "provider": "anthropic",
+          "temperature": 0.2,
+          "maxTokens": 900
+        }
+      }
+    ],
+    "prompts": [
+      {
+        "id": "triage-answerer-prompt-v31",
+        "status": "canary-blocked",
+        "createdAt": "2026-07-09T03:21:44+08:00",
+        "owner": "product-systems",
+        "s3Key": "registry/prompts/triage-answerer-prompt-v31.json"
+      },
+      {
+        "id": "triage-answerer-prompt-v30",
+        "status": "production",
+        "createdAt": "2026-07-08T19:51:08+08:00",
+        "owner": "product-systems",
+        "s3Key": "registry/prompts/triage-answerer-prompt-v30.json"
+      }
+    ],
+    "corpora": [
+      {
+        "id": "support-kb-2026-07-08T21-11Z",
+        "status": "quarantined",
+        "createdAt": "2026-07-08T21:11:19+08:00",
+        "owner": "support-ops",
+        "s3Key": "registry/corpora/support-kb-2026-07-08T21-11Z.json",
+        "metadata": {
+          "documents": 18342,
+          "changedDocuments": 482,
+          "embeddingModel": "embedder-mini-v4",
+          "note": "Engineered failure: degraded embedding model plus corrupted chunk boundaries."
+        }
+      },
+      {
+        "id": "support-kb-2026-07-08T04-30Z",
+        "status": "production",
+        "createdAt": "2026-07-08T04:30:07+08:00",
+        "owner": "support-ops",
+        "s3Key": "registry/corpora/support-kb-2026-07-08T04-30Z.json",
+        "metadata": {
+          "documents": 17860,
+          "changedDocuments": 91,
+          "embeddingModel": "embedder-large-v3"
+        }
+      },
+      {
+        "id": "support-kb-2026-06-29T09-00Z",
+        "status": "stale",
+        "createdAt": "2026-06-29T09:00:00+08:00",
+        "owner": "support-ops",
+        "s3Key": "registry/corpora/support-kb-2026-06-29T09-00Z.json",
+        "metadata": {
+          "documents": 17114,
+          "changedDocuments": 0,
+          "embeddingModel": "embedder-large-v3"
+        }
+      }
+    ]
+  },
+  "costs": {
+    "capUsd": 2200,
+    "currentUsd": 1842.36,
+    "series": [
+      {
+        "label": "Jul 3",
+        "spend": 220,
+        "tokens": 12200000
+      },
+      {
+        "label": "Jul 4",
+        "spend": 241,
+        "tokens": 12800000
+      },
+      {
+        "label": "Jul 5",
+        "spend": 259,
+        "tokens": 13900000
+      },
+      {
+        "label": "Jul 6",
+        "spend": 263,
+        "tokens": 14100000
+      },
+      {
+        "label": "Jul 7",
+        "spend": 274,
+        "tokens": 14700000
+      },
+      {
+        "label": "Jul 8",
+        "spend": 286,
+        "tokens": 15100000
+      },
+      {
+        "label": "Jul 9",
+        "spend": 299,
+        "tokens": 16000000
+      }
+    ],
+    "alerts": [
+      {
+        "level": "warning",
+        "message": "Projected July spend is 91% of cap after the candidate rollout.",
+        "createdAt": "2026-07-09T03:45:13+08:00"
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "evt-1783602972916",
+      "time": "21:16:12",
+      "kind": "stats",
+      "message": "Replay completed: BLOCK with p=<1e-12."
+    },
+    {
+      "id": "evt-1783601735484",
+      "time": "20:55:35",
+      "kind": "stats",
+      "message": "Replay completed: BLOCK with p=<1e-12."
+    },
+    {
+      "id": "evt-1783601731683",
+      "time": "20:55:31",
+      "kind": "gate",
+      "message": "Reviewer acknowledged the blocked canary and kept production on v17."
+    },
+    {
+      "id": "evt-001",
+      "time": "03:38:11",
+      "kind": "registry",
+      "message": "Model version claude-sonnet-gated-v18 registered in S3."
+    },
+    {
+      "id": "evt-002",
+      "time": "03:38:12",
+      "kind": "queue",
+      "message": "SQS received model-version-created event."
+    },
+    {
+      "id": "evt-003",
+      "time": "03:39:04",
+      "kind": "lambda",
+      "message": "Evaluation Lambda sampled 1,400 canary traces."
+    },
+    {
+      "id": "evt-004",
+      "time": "03:41:56",
+      "kind": "stats",
+      "message": "Rust drift engine returned Mann-Whitney p=0.000031."
+    },
+    {
+      "id": "evt-005",
+      "time": "03:42:18",
+      "kind": "gate",
+      "message": "Deployment blocked; rollout held at 12%."
+    }
+  ],
+  "architecture": [
+    {
+      "name": "SQS ingestion queue",
+      "role": "Receives model, prompt, and corpus update events."
+    },
+    {
+      "name": "Evaluation Lambda",
+      "role": "Runs golden-set and canary evaluations, writes artifacts to S3."
+    },
+    {
+      "name": "Rust drift engine",
+      "role": "Computes SPRT and Mann-Whitney U deployment gate decisions."
+    },
+    {
+      "name": "S3 registry/results",
+      "role": "Stores versioned model, prompt, corpus, and evaluation metadata."
+    },
+    {
+      "name": "Dashboard API",
+      "role": "Surfaces gate state, cost guardrails, registry health, and alerts."
+    }
+  ]
+}
