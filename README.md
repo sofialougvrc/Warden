@@ -14,18 +14,19 @@ LLM applications fail in ways that normal software dashboards do not always catc
 - a canary rollout increases P99 latency,
 - a model swap changes cost-per-1k-tokens enough to break the monthly cap.
 
-Warden is built around the operating principle that these changes should be evaluated before full rollout. It treats LLM/RAG deployment like a production systems problem: versioned inputs, event-driven evaluation, reproducible reports, guardrails, and clear human review states.
+Warden is built around the operating principle that these changes should be evaluated before full rollout. It treats LLM/RAG deployment like a production systems problem: versioned inputs, event-driven evaluation, reproducible reports, guardrails, and clear operator states.
 
-## What it demonstrates
+## Capabilities
 
-This repo is designed to show the kind of work expected from AI Engineer, Product Systems Engineer, and platform-leaning full-stack roles:
+Warden combines product, evaluation, and infrastructure concerns in one control plane:
 
-- building a real frontend product experience, not a static mockup,
-- connecting the dashboard to actual API state and persisted run data,
-- implementing statistical gates for deployment decisions,
-- modeling an LLM/RAG registry across models, prompts, and corpora,
-- thinking through serverless infrastructure, IAM boundaries, storage, queues, and observability,
-- presenting failure modes clearly enough that product and engineering reviewers can both understand the system.
+- tracks model, prompt, and corpus versions through a registry,
+- runs candidate deployments against baseline behavior,
+- applies statistical gates before promotion,
+- surfaces blocked, passed, stale, quarantined, and acknowledged states,
+- tracks cost and token usage against a monthly cap,
+- records deployment events and evaluation artifacts,
+- keeps the local dashboard backed by API state instead of static UI text.
 
 ## Demo story
 
@@ -40,19 +41,19 @@ The seeded scenario is an intentionally degraded RAG rollout:
 - Statistical signal: Mann-Whitney p-value of `0.000031`
 - Registry issue: quarantined corpus snapshot with degraded embedding/chunking metadata
 
-The goal of the demo is to show Warden catching a bad rollout before production reaches 100%.
+The scenario shows Warden catching a bad rollout before production reaches 100%.
 
 ## Product surface
 
 The dashboard includes:
 
-- **Deployment gate overview**: current canary, pass/block state, rollout percentage, and review status.
+- **Deployment gate overview**: current canary, pass/block state, rollout percentage, and acknowledgement status.
 - **Evaluation runs**: candidate vs baseline, trigger source, sample size, p-value, SPRT result, metric deltas, and gate thresholds.
 - **Model/dataset registry**: versioned model, prompt, and corpus metadata with production, stale, quarantined, and canary-blocked states.
 - **Cost governance**: current spend, monthly cap, daily spend trend, and warning alerts.
 - **Pipeline timeline**: event flow from registry update to queue ingestion, Lambda evaluation, Rust stats, and final deployment gate.
 - **Failure replay**: a button that reruns the degraded rollout path and records a fresh gate event.
-- **Human acknowledgement**: a review action that keeps production on the previous safe version.
+- **Human acknowledgement**: an operator action that keeps production on the previous safe version.
 
 ## Architecture
 
@@ -175,11 +176,10 @@ The SST scaffold models:
 - Secrets Manager integration for provider keys,
 - environment-specific IaC boundaries.
 
-The AWS infrastructure is intentionally scaffolded rather than deployed from this repo by default. This keeps the project easy to review and run locally while still showing the intended production architecture.
+The AWS infrastructure is intentionally scaffolded rather than deployed from this repo by default. This keeps the project easy to run locally while still showing the intended production architecture.
 
 ## What is fully implemented
 
-- Recruiter-readable dashboard and README narrative
 - React/Next dashboard
 - Real local API endpoints
 - Persisted seeded state
@@ -194,9 +194,9 @@ The AWS infrastructure is intentionally scaffolded rather than deployed from thi
 - Rust drift-engine source scaffold
 - SST/AWS infrastructure scaffold
 
-## What is intentionally scoped
+## Current scope
 
-This is an MVP designed for portfolio review, not a fully deployed SaaS product. The following pieces are intentionally left as next steps:
+This is an MVP, not a fully deployed SaaS product. The following pieces are intentionally left as next steps:
 
 - real AWS deployment,
 - compiled Rust Lambda artifact,
@@ -205,19 +205,19 @@ This is an MVP designed for portfolio review, not a fully deployed SaaS product.
 - CloudWatch alarms wired to live infrastructure,
 - upload flows for new model/prompt/corpus versions.
 
-That scope is deliberate: the repo focuses on the core product and systems signal without requiring cloud credentials or paid infrastructure to evaluate it.
+That scope is deliberate: the repo focuses on the core control-plane workflow without requiring cloud credentials or paid infrastructure to run it.
 
-## Demo script for reviewers
+## Walkthrough
 
 1. Start the dashboard with `npm run dev`.
 2. Open `http://localhost:4173`.
-3. Point out that `rag-answerer-v18` is blocked at 12% rollout.
+3. Confirm that `rag-answerer-v18` is blocked at 12% rollout.
 4. Open the latest evaluation run.
 5. Show the P99 latency regression, retrieval hit drop, p-value, and SPRT decision.
 6. Open the registry section and show the quarantined corpus snapshot.
 7. Open the cost section and show monthly cap tracking.
 8. Click `Replay failure` to rerun the degraded rollout path.
-9. Click `Acknowledge block` to show the human review state.
+9. Click `Acknowledge block` to show the acknowledged gate state.
 
 ## Notes
 
