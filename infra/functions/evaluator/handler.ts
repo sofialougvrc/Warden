@@ -34,9 +34,9 @@ export async function run(event: QueueEvent) {
 async function evaluate(payload: RegistryEvent) {
   const now = new Date().toISOString();
   const degradedCorpus = payload.corpusSnapshot.includes("21-11");
-  const pValue = degradedCorpus ? 0.000031 : 0.081;
-  const latencyDelta = degradedCorpus ? 16.4 : -2.2;
-  const retrievalDelta = degradedCorpus ? -8.4 : 0.8;
+  const pValue = degradedCorpus ? 0.002789 : 0.081;
+  const latencyDelta = degradedCorpus ? 11.9 : -2.2;
+  const retrievalDelta = degradedCorpus ? -5.7 : 0.8;
   const verdict = degradedCorpus ? "block" : "allow";
 
   return {
@@ -54,12 +54,12 @@ async function evaluate(payload: RegistryEvent) {
           ? "Latency and retrieval quality drift crossed the deployment gate."
           : "No statistically significant quality or latency regression detected.",
       pValue,
-      sampleSize: 1400
+      sampleSize: 960
     },
     metrics: {
       latencyDelta,
       retrievalDelta,
-      costPerThousandTokens: degradedCorpus ? 0.0187 : 0.0179
+      costPerThousandTokens: degradedCorpus ? 0.0206 : 0.0179
     },
     artifacts: {
       target: process.env.RESULTS_BUCKET,

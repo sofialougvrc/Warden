@@ -156,15 +156,29 @@ mod tests {
 
     #[test]
     fn blocks_degraded_candidate() {
-        let baseline: Vec<f64> = (0..700).map(|i| 1200.0 + (i % 80) as f64 * 8.0).collect();
-        let candidate: Vec<f64> = (0..700).map(|i| 1375.0 + (i % 95) as f64 * 9.0).collect();
+        let baseline: Vec<f64> = (0..480)
+            .map(|i| 1450.0 + (i % 90) as f64 * 5.5 + (i / 37) as f64)
+            .collect();
+        let candidate: Vec<f64> = baseline
+            .iter()
+            .enumerate()
+            .map(|(i, value)| {
+                let tail_penalty = if i as f64 / baseline.len() as f64 > 0.88 {
+                    210.0 + (i % 7) as f64 * 9.0
+                } else {
+                    0.0
+                };
+                value + 10.0 + tail_penalty
+            })
+            .collect();
         let decision = evaluate_canary(&CanaryInput {
             baseline_latency_ms: baseline,
             candidate_latency_ms: candidate,
-            retrieval_baseline: 0.842,
-            retrieval_candidate: 0.771,
+            retrieval_baseline: 0.823,
+            retrieval_candidate: 0.776,
         });
         assert_eq!(decision.verdict, "block");
         assert!(decision.mann_whitney_u.p_value < 0.01);
+        assert!(decision.mann_whitney_u.p_value > 0.001);
     }
 }

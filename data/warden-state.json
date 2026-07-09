@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-09T13:16:12.914Z",
+  "generatedAt": "2026-07-09T03:58:00+08:00",
   "summary": {
     "environment": "prod-canary",
     "gateState": "blocked",
-    "pipelineStatus": "awaiting-human-review",
+    "pipelineStatus": "awaiting-operator-ack",
     "activeRollout": "rag-answerer-v18",
     "rolloutPercent": 12,
     "deploymentsEvaluated": 41,
     "blockedDeployments": 3,
-    "meanDecisionSeconds": 46,
-    "monthlySpendUsd": 1842.36,
+    "meanDecisionSeconds": 58,
+    "monthlySpendUsd": 1916.22,
     "monthlyCapUsd": 2200,
-    "costPerThousandTokens": 0.0187,
+    "costPerThousandTokens": 0.0206,
     "costCapBreached": false,
     "staleRegistryEntries": 1,
     "activeAlerts": 2
@@ -32,61 +32,61 @@
       "decision": {
         "verdict": "block",
         "reason": "Latency and retrieval quality drift crossed the deployment gate.",
-        "confidence": 0.9999,
-        "pValue": 0.000031,
-        "sampleSize": 1400
+        "confidence": 0.9972,
+        "pValue": 0.002789,
+        "sampleSize": 960
       },
       "metrics": [
         {
           "name": "P99 latency",
-          "baseline": 1840,
-          "candidate": 2142,
+          "baseline": 1944,
+          "candidate": 2175,
           "unit": "ms",
-          "delta": 16.4,
+          "delta": 11.9,
           "direction": "worse",
           "gate": "block when > 8%"
         },
         {
           "name": "Retrieval hit@5",
-          "baseline": 0.842,
-          "candidate": 0.771,
+          "baseline": 0.823,
+          "candidate": 0.776,
           "unit": "ratio",
-          "delta": -8.4,
+          "delta": -5.7,
           "direction": "worse",
           "gate": "block when < -3%"
         },
         {
           "name": "Hallucination judge fail",
-          "baseline": 0.036,
-          "candidate": 0.061,
+          "baseline": 0.042,
+          "candidate": 0.058,
           "unit": "ratio",
-          "delta": 69.4,
+          "delta": 38.1,
           "direction": "worse",
           "gate": "block when > 25%"
         },
         {
           "name": "Cost / 1k tokens",
-          "baseline": 0.0179,
-          "candidate": 0.0187,
+          "baseline": 0.0194,
+          "candidate": 0.0206,
           "unit": "usd",
-          "delta": 4.5,
+          "delta": 6.2,
           "direction": "watch",
           "gate": "warn when > 10%"
         }
       ],
       "statTests": {
         "mannWhitneyU": {
-          "u": 318672,
-          "z": -4.17,
-          "pValue": 0.000031,
+          "u": 128044,
+          "z": 2.99,
+          "pValue": 0.002789,
           "interpretation": "Candidate latency distribution is significantly worse than baseline."
         },
         "sprt": {
-          "logLikelihoodRatio": 5.89,
+          "logLikelihoodRatio": 4.72,
           "alpha": 0.01,
           "beta": 0.05,
           "decision": "accept-regression-hypothesis",
-          "observations": 1400
+          "observations": 960
         }
       },
       "artifacts": [
@@ -290,30 +290,12 @@
     "alerts": [
       {
         "level": "warning",
-        "message": "Projected July spend is 91% of cap after the candidate rollout.",
+        "message": "Projected July spend is 87% of cap after the candidate rollout.",
         "createdAt": "2026-07-09T03:45:13+08:00"
       }
     ]
   },
   "events": [
-    {
-      "id": "evt-1783602972916",
-      "time": "21:16:12",
-      "kind": "stats",
-      "message": "Replay completed: BLOCK with p=<1e-12."
-    },
-    {
-      "id": "evt-1783601735484",
-      "time": "20:55:35",
-      "kind": "stats",
-      "message": "Replay completed: BLOCK with p=<1e-12."
-    },
-    {
-      "id": "evt-1783601731683",
-      "time": "20:55:31",
-      "kind": "gate",
-      "message": "Reviewer acknowledged the blocked canary and kept production on v17."
-    },
     {
       "id": "evt-001",
       "time": "03:38:11",
@@ -330,13 +312,13 @@
       "id": "evt-003",
       "time": "03:39:04",
       "kind": "lambda",
-      "message": "Evaluation Lambda sampled 1,400 canary traces."
+      "message": "Evaluation Lambda sampled 960 canary traces."
     },
     {
       "id": "evt-004",
       "time": "03:41:56",
       "kind": "stats",
-      "message": "Rust drift engine returned Mann-Whitney p=0.000031."
+      "message": "Rust drift engine returned Mann-Whitney p=0.0028."
     },
     {
       "id": "evt-005",

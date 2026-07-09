@@ -37,8 +37,8 @@ The seeded scenario is an intentionally degraded RAG rollout:
 - Rollout held at: `12%`
 - Decision: `blocked`
 - Reason: latency and retrieval quality drift crossed the deployment gate
-- Reported regression: `16.4%` P99 latency increase
-- Statistical signal: Mann-Whitney p-value of `0.000031`
+- Reported regression: `11.9%` P99 latency increase
+- Statistical signal: Mann-Whitney p-value of `0.0028`
 - Registry issue: quarantined corpus snapshot with degraded embedding/chunking metadata
 
 The scenario shows Warden catching a bad rollout before production reaches 100%.

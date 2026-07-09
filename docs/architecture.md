@@ -23,7 +23,7 @@ Warden is scoped as a serverless control plane for LLM/RAG deployment gates.
 
 The included canary intentionally uses a degraded embedding/corpus snapshot:
 
-- P99 latency regresses by 16.4%.
-- Retrieval hit@5 falls by 8.4%.
-- Mann-Whitney reports p=0.000031.
+- P99 latency regresses by 11.9%.
+- Retrieval hit@5 falls by 5.7%.
+- Mann-Whitney reports p=0.0028.
 - Warden blocks the rollout at 12%.
