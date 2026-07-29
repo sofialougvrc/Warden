@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node server/next-server.mjs",
     "build": "next build",
+    "deploy": "sst deploy --stage production",
     "start": "NODE_ENV=production node server/next-server.mjs",
     "local": "node server/index.mjs",
     "test": "node tests/stat-tests.mjs",
@@ -16,9 +17,13 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.864.0",
     "lucide-react": "^1.23.0",
     "next": "^16.2.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "sst": "^3.17.10"
   }
 }

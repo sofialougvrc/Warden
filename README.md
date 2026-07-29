@@ -101,7 +101,7 @@ server/next-server.mjs               Local dashboard server and API router
 server/stats.mjs                     Local Mann-Whitney / SPRT logic
 data/warden-state.json               Seeded registry, runs, costs, and events
 services/drift-engine/               Rust drift-engine source
-infra/sst.config.ts                  SST serverless infrastructure scaffold
+sst.config.ts                        SST serverless infrastructure entrypoint
 infra/functions/                     Lambda handler sketches
 docs/architecture.md                 Architecture notes
 tests/stat-tests.mjs                 Statistical gate verification
@@ -139,6 +139,53 @@ Build for production:
 npm run build
 ```
 
+## Deploy to AWS
+
+Warden can be deployed from AWS CloudShell or from a local machine with AWS credentials configured. The SST deployment creates the backend resources and the dashboard in one stack.
+
+From the AWS Console:
+
+1. Open **CloudShell** from the bottom-left terminal button.
+2. Keep the region as `ap-southeast-2` or set another region explicitly.
+3. Clone the repo and install dependencies.
+
+```bash
+git clone https://github.com/sofialougvrc/Warden.git
+cd Warden
+npm install
+```
+
+Deploy the production stage:
+
+```bash
+npx sst secret set ModelProviderApiKey "replace-me" --stage production
+```
+
+```bash
+AWS_REGION=ap-southeast-2 npx sst deploy --stage production
+```
+
+SST will print the deployed outputs when it finishes:
+
+```text
+dashboardUrl
+dashboardApiUrl
+ingestionQueueUrl
+stateBucket
+registryBucket
+resultsBucket
+```
+
+Open `dashboardUrl` to view the deployed dashboard.
+
+See [docs/aws-deployment.md](docs/aws-deployment.md) for the CloudShell walkthrough and smoke-test checklist.
+
+To remove non-production stages later:
+
+```bash
+npx sst remove --stage dev
+```
+
 ## API endpoints
 
 The local server exposes the same API surface used by the dashboard:
@@ -169,14 +216,15 @@ The local JavaScript implementation powers the runnable dashboard and tests. The
 
 The SST scaffold models:
 
+- a deployed Next.js dashboard through OpenNext,
 - an SQS queue for model, prompt, and corpus version events,
 - an evaluation Lambda that consumes queue messages,
-- S3 buckets for versioned registry metadata and evaluation artifacts,
+- S3 buckets for dashboard state, versioned registry metadata, and evaluation artifacts,
 - a dashboard API Lambda,
 - Secrets Manager integration for provider keys,
 - environment-specific IaC boundaries.
 
-The AWS infrastructure is intentionally scaffolded rather than deployed from this repo by default. This keeps the project easy to run locally while still showing the intended production architecture.
+The local dashboard runs without AWS credentials. When deployed through SST, the dashboard state is stored in S3 and the dashboard is served through AWS infrastructure.
 
 ## What is fully implemented
 
@@ -192,13 +240,12 @@ The AWS infrastructure is intentionally scaffolded rather than deployed from thi
 - Statistical tests
 - Production build
 - Rust drift-engine source scaffold
-- SST/AWS infrastructure scaffold
+- SST/AWS infrastructure for backend resources and dashboard deployment
 
 ## Current scope
 
 This is an MVP, not a fully deployed SaaS product. The following pieces are intentionally left as next steps:
 
-- real AWS deployment,
 - compiled Rust Lambda artifact,
 - provider API integrations,
 - auth and multi-user permissions,
@@ -223,4 +270,4 @@ That scope is deliberate: the repo focuses on the core control-plane workflow wi
 
 The dev server may print `Watchpack Error: EMFILE` warnings in constrained sandboxes with low file-watch limits. The dashboard and APIs still serve normally. On a normal laptop, this is usually fixed by raising the open-file limit or running outside a sandboxed environment.
 
-This project can be deployed later, but it is designed to be evaluated locally from the repository without requiring AWS credentials.
+The project remains local-first for development, but the same codebase can deploy the dashboard and backend resources through SST when AWS credentials are available.
