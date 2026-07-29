@@ -2,7 +2,9 @@ node_modules/
 .next/
 .open-next/
 .sst/
+sst-env.d.ts
 .npm-cache/
+AWSCLIV2.pkg
 
 .env
 .env.*
