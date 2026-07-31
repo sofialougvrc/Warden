@@ -73,6 +73,17 @@ export default $config({
       },
       server: {
         runtime: "nodejs22.x"
+      },
+      transform: {
+        imageOptimizer: (args) => {
+          args.runtime = "nodejs22.x";
+        },
+        revalidationSeeder: (args) => {
+          args.runtime = "nodejs22.x";
+        },
+        revalidationEventsSubscriber: (args) => {
+          args.runtime = "nodejs22.x";
+        }
       }
     });
 
