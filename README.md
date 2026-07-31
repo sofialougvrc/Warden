@@ -7,9 +7,11 @@ The core idea is simple: model, prompt, and corpus changes should not be promote
 ## Live deployment
 
 - **Dashboard**: [https://d2yeg20c8k5bcq.cloudfront.net](https://d2yeg20c8k5bcq.cloudfront.net)
+- **Latest SST deployment**: [https://sst.dev/u/58754f21](https://sst.dev/u/58754f21)
 - **AWS region**: `ap-southeast-2`
 - **Deployment**: SST production stage
-- **Backend shape**: Next.js on AWS, Lambda API, SQS ingestion queue, S3 state/registry/results buckets, IAM-managed permissions, and Secrets Manager integration
+- **Runtime**: Node.js 22 Lambda functions
+- **Backend shape**: Next.js on AWS, Lambda API, SQS ingestion queue, S3 state/registry/results buckets, IAM-managed permissions, Secrets Manager integration, and CloudWatch logs
 
 ## Why this project exists
 
